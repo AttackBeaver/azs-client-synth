@@ -1,0 +1,54 @@
+[
+  {
+    "id": "rational_driver",
+    "name": "Рациональный водитель",
+    "desc": "Снижает расходы, реагирует на скидки",
+    "prototype": {
+      "age": 40,
+      "avg_check": 900,
+      "visits_per_month": 2.0,
+      "distance_km": 8.0,
+      "uses_app": 1,
+      "prefers_coffee": 0
+    }
+  },
+  {
+    "id": "impulsive_city",
+    "name": "Импульсивный горожанин",
+    "desc": "Частые короткие заезды, реагирует на UX/акции",
+    "prototype": {
+      "age": 28,
+      "avg_check": 700,
+      "visits_per_month": 3.5,
+      "distance_km": 2.5,
+      "uses_app": 1,
+      "prefers_coffee": 1
+    }
+  },
+  {
+    "id": "premium",
+    "name": "Премиум-клиент",
+    "desc": "Высокий средний чек, ценит сервис",
+    "prototype": {
+      "age": 45,
+      "avg_check": 2200,
+      "visits_per_month": 4.0,
+      "distance_km": 6.0,
+      "uses_app": 1,
+      "prefers_coffee": 1
+    }
+  },
+  {
+    "id": "professional",
+    "name": "Профессионал (дальнобойщик)",
+    "desc": "Большие расстояния, стабильные заправки",
+    "prototype": {
+      "age": 38,
+      "avg_check": 1800,
+      "visits_per_month": 8.0,
+      "distance_km": 80.0,
+      "uses_app": 0,
+      "prefers_coffee": 0
+    }
+  }
+]
