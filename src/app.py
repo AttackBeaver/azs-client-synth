@@ -28,7 +28,7 @@ else:
 st.subheader("Превью данных")
 st.dataframe(df.head())
 
-portraits = load_portraits("portraits.json")
+portraits = load_portraits("src/portraits.json")
 if st.button("Сопоставить с портретами"):
     mapped = map_clients_to_portraits(df, portraits)
     # attach
