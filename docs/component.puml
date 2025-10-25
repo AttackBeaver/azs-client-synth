@@ -1,0 +1,52 @@
+@startuml
+!define RECTANGLE class
+skinparam defaultTextAlignment center
+
+title Диаграмма компонентов системы "АЗС TwinLab"
+
+rectangle "Генератор данных" as generator {
+  component "generator.py" as gen
+  component "portraits.json" as portraits
+}
+
+rectangle "Модуль маппинга" as mapper {
+  component "mapper.py" as map
+  database "K-Means\nКластеризация" as kmeans
+}
+
+rectangle "Модуль реакций" as reactor {
+  component "reactor.py" as react
+  component "Правила реакций" as rules
+}
+
+rectangle "Веб-интерфейс" as app {
+  component "app.py" as streamlit
+  component "Визуализация\nPlotly" as viz
+}
+
+database "Синтетические\nданные" as data1 {
+  [synthetic.csv]
+}
+
+database "Данные с\nпортретами" as data2 {
+  [synthetic_mapped.csv]
+}
+
+actor "Продуктовый\nаналитик" as user
+
+user --> streamlit : Запускает веб-интерфейс
+streamlit --> gen : Запускает генерацию
+gen --> portraits : Читает портреты
+gen --> data1 : Сохраняет synthetic.csv
+data1 --> map : Передает данные
+portraits --> map : Предоставляет эталоны
+map --> kmeans : Выполняет кластеризацию
+kmeans --> data2 : Сохраняет маппинг
+data2 --> react : Передает данные
+portraits --> rules : Предоставляет правила
+rules --> react : Определяет реакции
+react --> streamlit : Возвращает результаты
+streamlit --> viz : Создает графики
+viz --> user : Показывает дашборд
+
+@enduml
