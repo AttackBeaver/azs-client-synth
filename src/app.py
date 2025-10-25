@@ -2,8 +2,11 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+import plotly.express as px
 from generator import generate_clients
 from mapper import map_clients_to_portraits
+from viz import plot_portrait_distribution, plot_heatmap_features, plot_metric
+from simulator_advanced import simulate_feature_response
 
 st.set_page_config(
     page_title="АЗС TwinLab",
@@ -11,11 +14,10 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="⛽"
 )
-st.markdown(
-    "<h1 style='text-align: center; color: #ffffff;'>⛽АЗС TwinLab⛽</h1>", 
-    unsafe_allow_html=True
-)
-#st.title("⛽АЗС TwinLab⛽", )
+
+# === заголовок ===
+st.title("⛽АЗС TwinLab⛽")
+
 st.markdown("""
 **Проект подготовлен в рамках хакатона «Моя профессия – IT 2025».**  
 **Команда-разработчик:** *«404: Имя не найдено»*  
@@ -28,17 +30,28 @@ st.markdown("""
 ---
 """)
 
+# === бар слева ===
+st.sidebar.image("docs/f404.png", width="content")
+
 st.sidebar.header("⚙️Настройки генерации")
 num_clients = st.sidebar.slider("Количество клиентов", min_value=20, max_value=2000, value=1000, step=10)
 with st.sidebar:
-    st.markdown("""
-    ---
-    """)
-    st.image("docs/f404.png", width="content")
+    st.markdown(""" --- """)
+
+clients_df = st.session_state.get("clients_df", None)
+portraits_rules = json.load(open("src/behavior_rules.json", "r", encoding="utf-8"))
+feature_hypotheses = json.load(open("src/feature_hypotheses.json", "r", encoding="utf-8"))
+
+st.sidebar.header("⚙️Настройки симуляции")
+selected_feature = st.sidebar.selectbox(
+    "Выберите фичу для симуляции",
+    [f["feature_name"] for f in feature_hypotheses]
+)
     
 DATA_PATH = "data/synthetic.csv"
 MAPPED_PATH = "data/synthetic_mapped.csv"
 
+# === выбираем откуда брать данные ===
 st.subheader("Источник данных")
 
 uploaded = st.file_uploader("Загрузите CSV с обезличенными пользователями (или перетащите файл)", type=["csv"])
@@ -65,7 +78,7 @@ with col2:
         st.session_state["clients_df"] = df
         st.success(f"Данные сгенерированы и сохранены в {DATA_PATH} ({len(df)} строк)")
 
-# Если загрузил файл через drag & drop
+# если загрузил файл через drag&drop
 if uploaded is not None:
     try:
         df_uploaded = pd.read_csv(uploaded)
@@ -81,7 +94,7 @@ if "clients_df" in st.session_state:
 else:
     st.info("Нет данных. Загрузите CSV или сгенерируйте новый набор.")
 
-# === Маппинг портретов ===
+# === маппинг ===
 st.subheader("Маппинг клиентов на портреты")
 if "clients_df" in st.session_state:
     if st.button("Сопоставить с портретами"):
@@ -96,7 +109,7 @@ if "clients_df" in st.session_state:
             try:
                 mapped_df = map_clients_to_portraits(st.session_state["clients_df"], portraits)
             except Exception as e:
-                st.error(f"Ошибка маппинга: {e}")
+                st.error(f"Ошибка маппинга: {e}") # была ошибка, следить
                 st.stop()
 
             st.session_state["mapped_df"] = mapped_df
@@ -114,17 +127,51 @@ if "clients_df" in st.session_state:
 else:
     st.info("Сначала загрузите или сгенерируйте данные.")
 
-# === Дополнительные возможности ===
+# === визуализация портретов ===
+feature_names = {
+    "visits_per_month": "Визиты в месяц",
+    "avg_liters_per_visit": "Средний литраж",
+    "avg_spend_per_visit": "Средний чек"
+}
+
+if "mapped_df" in st.session_state:
+    df_mapped = st.session_state["mapped_df"]
+
+    st.subheader("Визуализация портретов")
+    st.plotly_chart(plot_portrait_distribution(df_mapped))
+
+    st.plotly_chart(plot_heatmap_features(df_mapped, list(feature_names.keys()), feature_names))
+
+    st.subheader("Метрики по портретам")
+    for metric, name in feature_names.items():
+        st.plotly_chart(plot_metric(df_mapped, metric, name))
+
+
+# === симуляцмя реакции портретов ===
+st.subheader("Симуляция реакции клиентов")
+if clients_df is not None and st.button("Запустить симуляцию"):
+    with st.spinner("Симуляция отклика клиентов..."):
+        sim_df, metrics_df = simulate_feature_response(clients_df, portraits_rules, feature_hypotheses, selected_feature)
+        st.session_state["sim_df"] = sim_df
+
+    st.success("✅ Симуляция завершена!")
+
+    st.subheader("Метрики отклика по портретам")
+    st.dataframe(metrics_df)
+
+    st.subheader("Распределение откликов по портретам")
+    st.bar_chart(metrics_df.set_index("portrait_name")["response_rate"])
+
+    st.subheader("Первые 200 клиентов с реакцией")
+    st.dataframe(sim_df.head(200))
+
+# === дополнительные возможности ===
 st.markdown("---")
 st.subheader("В разработке")
-with st.expander("Просмотр портретов и аналитики"):
-    st.write("📌 В будущем здесь будет визуализация профилей портретов, тепловые карты и метрики сегментов.")
-with st.expander("A/B тестирование"):
-    st.write("📊 Планируется модуль симуляции реакции целевых групп на фичи и сервисы.")
 with st.expander("Прогнозирование поведения"):
     st.write("🔮 Будет добавлен блок машинного обучения для прогноза визитов и объёмов покупок.")
 
-# === Подвал ===
+# === подвал ===
 st.markdown("""
 ---
 © 2025. Проект команды **«404: Имя не найдено»**  

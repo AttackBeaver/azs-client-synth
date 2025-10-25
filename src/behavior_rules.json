@@ -1,0 +1,68 @@
+{
+    "Постоянный клиент": {
+        "increase_visits_on_bonus": 0.1,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": true,
+        "prefers_regular_station": true
+    },
+    "Корпоративный автопарк": {
+        "increase_visits_on_bonus": 0.05,
+        "responds_to_personal_recommendations": false,
+        "sensitive_to_discounts": false,
+        "prefers_regular_station": true,
+        "requires_reporting": true
+    },
+    "Редкий клиент": {
+        "increase_visits_on_bonus": 0.15,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": true,
+        "prefers_regular_station": false
+    },
+    "Таксопарк": {
+        "increase_visits_on_bonus": 0.2,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": true,
+        "requires_fast_service": true
+    },
+    "Премиум-клиент": {
+        "increase_visits_on_bonus": 0.05,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": false,
+        "expects_vip_service": true
+    },
+    "Грузоперевозчик": {
+        "increase_visits_on_bonus": 0.05,
+        "responds_to_personal_recommendations": false,
+        "sensitive_to_discounts": false,
+        "prefers_bulk_orders": true
+    },
+    "Экономный водитель": {
+        "increase_visits_on_bonus": 0.1,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": true
+    },
+    "Служебный транспорт": {
+        "increase_visits_on_bonus": 0.05,
+        "responds_to_personal_recommendations": false,
+        "requires_reporting": true
+    },
+    "Эко-клиент": {
+        "increase_visits_on_bonus": 0.1,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": false,
+        "prefers_eco_options": true
+    },
+    "Новые клиенты": {
+        "increase_visits_on_bonus": 0.15,
+        "responds_to_personal_recommendations": true,
+        "sensitive_to_discounts": true,
+        "requires_education": true
+    },
+    "Постоянный корпоративный клиент": {
+        "increase_visits_on_bonus": 0.05,
+        "responds_to_personal_recommendations": false,
+        "sensitive_to_discounts": false,
+        "prefers_regular_station": true,
+        "requires_reporting": true
+    }
+}
