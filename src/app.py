@@ -7,8 +7,8 @@ from mapper import map_clients_to_portraits
 
 st.set_page_config(
     page_title="АЗС TwinLab",
-    #layout="wide",
-    #initial_sidebar_state="expanded",
+    layout="wide",
+    initial_sidebar_state="expanded",
     page_icon="⛽"
 )
 st.markdown(
