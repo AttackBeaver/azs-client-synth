@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 from generator import generate_clients
 from mapper import map_clients_to_portraits
-from viz import plot_portrait_distribution, plot_heatmap_features, plot_metric
+from visualization import plot_portrait_distribution, plot_heatmap_features, plot_metric
 from simulator_advanced import simulate_feature_response
 
 st.set_page_config(
@@ -17,11 +17,9 @@ st.set_page_config(
 
 # === заголовок ===
 st.title("⛽АЗС TwinLab⛽")
-
-st.markdown("""
-**Проект подготовлен в рамках хакатона «Моя профессия – IT 2025».**  
-**Команда-разработчик:** *«404: Имя не найдено»*  
-
+st.subheader("Команда-разработчик: «404: Имя не найдено»")
+with st.expander("Проект подготовлен в рамках хакатона «Моя профессия – IT 2025»", expanded=False):
+    st.markdown("""
 Приложение демонстрирует, как на основе данных о клиентах АЗС можно:
 - сегментировать пользователей,
 - построить клиентские портреты,
@@ -29,7 +27,7 @@ st.markdown("""
 - поддерживать продуктовые решения (например, выбор целевой аудитории, прогноз отклика и проведение A/B-тестов).
 ---
 """)
-
+    
 # === бар слева ===
 st.sidebar.image("docs/f404.png", width="content")
 
@@ -93,6 +91,20 @@ if "clients_df" in st.session_state:
     st.dataframe(df.head(10))
 else:
     st.info("Нет данных. Загрузите CSV или сгенерируйте новый набор.")
+
+# === описание портретов клиентов ===
+st.subheader("Сводка по портретам")
+with st.expander("Наши клиенты", expanded=False):
+    with open("src/portraits.json", "r", encoding="utf-8") as f:
+        portraits_info = json.load(f)
+
+    for portrait in portraits_info:
+        with st.expander(f"📌 {portrait['portrait_name']}", expanded=False):
+            st.write(f"**Описание:** {portrait['description']}")
+            st.write(f"**Бизнес-ценность:** {portrait['business_value']}")
+            st.write("**Рекомендации по взаимодействию:**")
+            for rec in portrait['recommendations']:
+                st.write(f"• {rec}")
 
 # === маппинг ===
 st.subheader("Маппинг клиентов на портреты")
