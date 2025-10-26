@@ -3,10 +3,22 @@
     "portrait_name": "Постоянный клиент",
     "description": "Частный владелец автомобиля, регулярно заправляется на одной сети АЗС.",
     "criteria": {
-      "visits_per_month": [4, 12],
-      "avg_liters_per_visit": [30, 60],
-      "avg_spend_per_visit": [2000, 5000],
-      "fuel_type": ["АИ-92", "АИ-95"],
+      "visits_per_month": [
+        4,
+        12
+      ],
+      "avg_liters_per_visit": [
+        30,
+        60
+      ],
+      "avg_spend_per_visit": [
+        2000,
+        5000
+      ],
+      "fuel_type": [
+        "АИ-92",
+        "АИ-95"
+      ],
       "loyalty_card": true,
       "fuel_card": false,
       "contract": false
@@ -21,10 +33,22 @@
     "portrait_name": "Корпоративный автопарк",
     "description": "Организация с несколькими служебными автомобилями и безналичной оплатой.",
     "criteria": {
-      "visits_per_month": [15, 50],
-      "avg_liters_per_visit": [40, 80],
-      "avg_spend_per_visit": [5000, 10000],
-      "fuel_type": ["ДТ", "АИ-95"],
+      "visits_per_month": [
+        15,
+        50
+      ],
+      "avg_liters_per_visit": [
+        40,
+        80
+      ],
+      "avg_spend_per_visit": [
+        5000,
+        10000
+      ],
+      "fuel_type": [
+        "ДТ",
+        "АИ-95"
+      ],
       "loyalty_card": false,
       "fuel_card": true,
       "contract": true
@@ -39,9 +63,18 @@
     "portrait_name": "Редкий клиент",
     "description": "Заправляется нерегулярно, возможно, путешественник или случайный водитель.",
     "criteria": {
-      "visits_per_month": [0, 2],
-      "avg_liters_per_visit": [20, 50],
-      "avg_spend_per_visit": [1000, 2500],
+      "visits_per_month": [
+        0,
+        2
+      ],
+      "avg_liters_per_visit": [
+        20,
+        50
+      ],
+      "avg_spend_per_visit": [
+        1000,
+        2500
+      ],
       "loyalty_card": false
     },
     "business_value": "Низкий LTV, но потенциал роста при вовлечении в программу лояльности.",
@@ -54,10 +87,22 @@
     "portrait_name": "Таксопарк",
     "description": "Водители такси, заправляющиеся часто, преимущественно бензином среднего класса.",
     "criteria": {
-      "visits_per_month": [20, 60],
-      "avg_liters_per_visit": [25, 45],
-      "avg_spend_per_visit": [2000, 4000],
-      "fuel_type": ["АИ-92", "АИ-95"],
+      "visits_per_month": [
+        20,
+        60
+      ],
+      "avg_liters_per_visit": [
+        25,
+        45
+      ],
+      "avg_spend_per_visit": [
+        2000,
+        4000
+      ],
+      "fuel_type": [
+        "АИ-92",
+        "АИ-95"
+      ],
       "loyalty_card": true,
       "fuel_card": true
     },
@@ -71,10 +116,22 @@
     "portrait_name": "Премиум-клиент",
     "description": "Обеспеченный частный водитель, использует топливо премиум-класса.",
     "criteria": {
-      "visits_per_month": [2, 6],
-      "avg_liters_per_visit": [40, 70],
-      "avg_spend_per_visit": [4000, 8000],
-      "fuel_type": ["АИ-98", "Ultimate"],
+      "visits_per_month": [
+        2,
+        6
+      ],
+      "avg_liters_per_visit": [
+        40,
+        70
+      ],
+      "avg_spend_per_visit": [
+        4000,
+        8000
+      ],
+      "fuel_type": [
+        "АИ-98",
+        "Ultimate"
+      ],
       "loyalty_card": true
     },
     "business_value": "Высокий средний чек, ожидает персонализированный сервис.",
@@ -87,10 +144,21 @@
     "portrait_name": "Грузоперевозчик",
     "description": "Водители грузового транспорта, часто заправляются дизелем, большие объемы.",
     "criteria": {
-      "visits_per_month": [10, 40],
-      "avg_liters_per_visit": [80, 200],
-      "avg_spend_per_visit": [8000, 20000],
-      "fuel_type": ["ДТ"],
+      "visits_per_month": [
+        10,
+        40
+      ],
+      "avg_liters_per_visit": [
+        80,
+        200
+      ],
+      "avg_spend_per_visit": [
+        8000,
+        20000
+      ],
+      "fuel_type": [
+        "ДТ"
+      ],
       "fuel_card": true
     },
     "business_value": "Высокий оборот топлива, стабильные клиенты.",
@@ -103,10 +171,21 @@
     "portrait_name": "Экономный водитель",
     "description": "Заправляется мало, старается экономить, часто использует АИ-92.",
     "criteria": {
-      "visits_per_month": [1, 4],
-      "avg_liters_per_visit": [20, 40],
-      "avg_spend_per_visit": [1000, 3000],
-      "fuel_type": ["АИ-92"]
+      "visits_per_month": [
+        1,
+        4
+      ],
+      "avg_liters_per_visit": [
+        20,
+        40
+      ],
+      "avg_spend_per_visit": [
+        1000,
+        3000
+      ],
+      "fuel_type": [
+        "АИ-92"
+      ]
     },
     "business_value": "Низкий средний чек, чувствителен к акциям.",
     "recommendations": [
@@ -118,9 +197,18 @@
     "portrait_name": "Служебный транспорт",
     "description": "Компании с небольшим количеством служебных машин, часто заправляются по контракту.",
     "criteria": {
-      "visits_per_month": [5, 20],
-      "avg_liters_per_visit": [30, 60],
-      "avg_spend_per_visit": [3000, 7000],
+      "visits_per_month": [
+        5,
+        20
+      ],
+      "avg_liters_per_visit": [
+        30,
+        60
+      ],
+      "avg_spend_per_visit": [
+        3000,
+        7000
+      ],
       "fuel_card": true,
       "contract": true
     },
@@ -134,10 +222,22 @@
     "portrait_name": "Эко-клиент",
     "description": "Использует топливо эконом- или гибридного типа, умеренно заправляется.",
     "criteria": {
-      "visits_per_month": [2, 6],
-      "avg_liters_per_visit": [20, 50],
-      "avg_spend_per_visit": [1500, 4000],
-      "fuel_type": ["Гибрид", "Эко"]
+      "visits_per_month": [
+        2,
+        6
+      ],
+      "avg_liters_per_visit": [
+        20,
+        50
+      ],
+      "avg_spend_per_visit": [
+        1500,
+        4000
+      ],
+      "fuel_type": [
+        "Гибрид",
+        "Эко"
+      ]
     },
     "business_value": "Низкий/средний LTV, ценит экологичность.",
     "recommendations": [
@@ -149,9 +249,18 @@
     "portrait_name": "Новые клиенты",
     "description": "Недавно зарегистрированные пользователи, без истории покупок.",
     "criteria": {
-      "visits_per_month": [0, 1],
-      "avg_liters_per_visit": [0, 30],
-      "avg_spend_per_visit": [0, 2000]
+      "visits_per_month": [
+        0,
+        1
+      ],
+      "avg_liters_per_visit": [
+        0,
+        30
+      ],
+      "avg_spend_per_visit": [
+        0,
+        2000
+      ]
     },
     "business_value": "Потенциал роста, чувствительны к вовлечению.",
     "recommendations": [
@@ -163,9 +272,18 @@
     "portrait_name": "Постоянный корпоративный клиент",
     "description": "Организации, которые заправляются регулярно и имеют договор на обслуживание.",
     "criteria": {
-      "visits_per_month": [10, 40],
-      "avg_liters_per_visit": [50, 120],
-      "avg_spend_per_visit": [7000, 15000],
+      "visits_per_month": [
+        10,
+        40
+      ],
+      "avg_liters_per_visit": [
+        50,
+        120
+      ],
+      "avg_spend_per_visit": [
+        7000,
+        15000
+      ],
       "fuel_card": true,
       "contract": true
     },

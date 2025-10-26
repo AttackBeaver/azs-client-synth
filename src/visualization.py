@@ -2,14 +2,17 @@ import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
 
+
 def plot_portrait_distribution(df: pd.DataFrame):
     """
     Распределение клиентов по портретам.
     """
     counts = df['portrait_name'].value_counts().reset_index()
     counts.columns = ['Портрет', 'Количество клиентов']
-    fig = px.bar(counts, x='Портрет', y='Количество клиентов', title='Распределение клиентов по портретам')
+    fig = px.bar(counts, x='Портрет', y='Количество клиентов',
+                 title='Распределение клиентов по портретам')
     return fig
+
 
 def plot_heatmap_features(df: pd.DataFrame, features: list, feature_names: dict):
     """
@@ -30,6 +33,7 @@ def plot_heatmap_features(df: pd.DataFrame, features: list, feature_names: dict)
     fig.update_layout(title='Средние показатели по портретам')
     return fig
 
+
 def plot_metric(df: pd.DataFrame, metric: str, metric_name: str):
     """
     Визуализация средней метрики по портретам.
@@ -37,6 +41,8 @@ def plot_metric(df: pd.DataFrame, metric: str, metric_name: str):
     metric_name: отображаемое русское название
     """
     summary = df.groupby('portrait_name')[metric].mean().reset_index()
-    summary = summary.rename(columns={'portrait_name': 'Портрет', metric: metric_name})
-    fig = px.bar(summary, x='Портрет', y=metric_name, title=f'Среднее {metric_name} по портретам')
+    summary = summary.rename(
+        columns={'portrait_name': 'Портрет', metric: metric_name})
+    fig = px.bar(summary, x='Портрет', y=metric_name,
+                 title=f'{metric_name} по портретам')
     return fig

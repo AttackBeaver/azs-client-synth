@@ -7,6 +7,7 @@ from generator import generate_clients
 from mapper import map_clients_to_portraits
 from visualization import plot_portrait_distribution, plot_heatmap_features, plot_metric
 from simulator_advanced import simulate_feature_response
+import predictor
 
 st.set_page_config(
     page_title="АЗС TwinLab",
@@ -26,32 +27,48 @@ with st.expander("Проект подготовлен в рамках хакат
 - анализировать поведение по категориям,
 - поддерживать продуктовые решения (например, выбор целевой аудитории, прогноз отклика и проведение A/B-тестов).
 """)
-    
+
 # === бар слева ===
 st.sidebar.image("docs/f404.png", width="content")
 
 st.sidebar.header("⚙️Настройки генерации")
-num_clients = st.sidebar.slider("Количество клиентов", min_value=20, max_value=2000, value=1000, step=10)
+num_clients = st.sidebar.slider(
+    "Количество клиентов", min_value=1000, max_value=10000, value=5000, step=100)
 with st.sidebar:
     st.markdown(""" --- """)
 
 clients_df = st.session_state.get("clients_df", None)
-portraits_rules = json.load(open("src/behavior_rules.json", "r", encoding="utf-8"))
-feature_hypotheses = json.load(open("src/feature_hypotheses.json", "r", encoding="utf-8"))
+portraits_rules = json.load(
+    open("src/behavior_rules.json", "r", encoding="utf-8"))
+feature_hypotheses = json.load(
+    open("src/feature_hypotheses.json", "r", encoding="utf-8"))
 
 st.sidebar.header("⚙️Настройки симуляции")
 selected_feature = st.sidebar.selectbox(
     "Выберите фичу для симуляции",
     [f["feature_name"] for f in feature_hypotheses]
 )
-    
+
+with st.sidebar:
+    st.markdown(""" --- """)
+
+st.sidebar.header("⚙️Настройка прогноза")
+feature_choice = st.sidebar.selectbox(
+    "Выберите фичу для моделирования:",
+    [f["feature_name"] for f in feature_hypotheses]
+)
+train_model = st.sidebar.checkbox(
+    "Обучить модель на симуляциях (если есть данные)", value=True)
+
+
 DATA_PATH = "data/synthetic.csv"
 MAPPED_PATH = "data/synthetic_mapped.csv"
 
 # === выбираем откуда брать данные ===
 st.subheader("Источник данных")
 
-uploaded = st.file_uploader("Загрузите CSV с обезличенными пользователями (или перетащите файл)", type=["csv"])
+uploaded = st.file_uploader(
+    "Загрузите CSV с обезличенными пользователями (или перетащите файл)", type=["csv"])
 
 col1, col2 = st.columns([1, 1])
 with col1:
@@ -73,14 +90,16 @@ with col2:
         os.makedirs("data", exist_ok=True)
         df.to_csv(DATA_PATH, index=False)
         st.session_state["clients_df"] = df
-        st.success(f"Данные сгенерированы и сохранены в {DATA_PATH} ({len(df)} строк)")
+        st.success(
+            f"Данные сгенерированы и сохранены в {DATA_PATH} ({len(df)} строк)")
 
 # если загрузил файл через drag&drop
 if uploaded is not None:
     try:
         df_uploaded = pd.read_csv(uploaded)
         st.session_state["clients_df"] = df_uploaded
-        st.success(f"Загружен файл: {uploaded.name} ({len(df_uploaded)} строк)")
+        st.success(
+            f"Загружен файл: {uploaded.name} ({len(df_uploaded)} строк)")
     except Exception as e:
         st.error(f"Не удалось прочитать загруженный файл: {e}")
 
@@ -118,9 +137,10 @@ if "clients_df" in st.session_state:
                 st.stop()
 
             try:
-                mapped_df = map_clients_to_portraits(st.session_state["clients_df"], portraits)
+                mapped_df = map_clients_to_portraits(
+                    st.session_state["clients_df"], portraits)
             except Exception as e:
-                st.error(f"Ошибка маппинга: {e}") # была ошибка, следить
+                st.error(f"Ошибка маппинга: {e}")
                 st.stop()
 
             st.session_state["mapped_df"] = mapped_df
@@ -151,18 +171,19 @@ if "mapped_df" in st.session_state:
     st.subheader("Визуализация портретов")
     st.plotly_chart(plot_portrait_distribution(df_mapped))
 
-    st.plotly_chart(plot_heatmap_features(df_mapped, list(feature_names.keys()), feature_names))
+    st.plotly_chart(plot_heatmap_features(
+        df_mapped, list(feature_names.keys()), feature_names))
 
     st.subheader("Метрики по портретам")
     for metric, name in feature_names.items():
         st.plotly_chart(plot_metric(df_mapped, metric, name))
 
-
 # === симуляцмя реакции портретов ===
 st.subheader("Симуляция реакции клиентов")
 if clients_df is not None and st.button("Запустить симуляцию"):
     with st.spinner("Симуляция отклика клиентов..."):
-        sim_df, metrics_df = simulate_feature_response(clients_df, portraits_rules, feature_hypotheses, selected_feature)
+        sim_df, metrics_df = simulate_feature_response(
+            clients_df, portraits_rules, feature_hypotheses, selected_feature)
         st.session_state["sim_df"] = sim_df
 
     st.success("✅ Симуляция завершена!")
@@ -175,12 +196,91 @@ if clients_df is not None and st.button("Запустить симуляцию")
 
     st.subheader("Первые 200 клиентов с реакцией")
     st.dataframe(sim_df.head(200))
+else:
+    st.info("Сначала выполните маппинг клиентов.")
 
-# === дополнительные возможности ===
-st.markdown("---")
-st.subheader("В разработке")
-with st.expander("Прогнозирование поведения"):
-    st.write("🔮 Будет добавлен блок машинного обучения для прогноза визитов и объёмов покупок.")
+# === прогноз поведения ===
+st.subheader("Прогнозирование поведения клиентов")
+
+# загрузка данных
+
+try:
+    mapped_df = pd.read_csv("data/synthetic_mapped.csv")
+    st.success("✅ Загрузка клиентов после маппинга: synthetic_mapped.csv")
+
+    sim_df_path = "data/simulated_reactions_advanced.csv"
+    sim_df = pd.read_csv(sim_df_path) if os.path.exists(sim_df_path) else None
+    if sim_df is not None:
+        st.success(
+            "✅ Загружены данные симуляции: simulated_reactions_advanced.csv")
+
+    with open("src/behavior_rules.json", "r", encoding="utf-8") as f:
+        portraits_rules = json.load(f)
+
+    with open("src/feature_hypotheses.json", "r", encoding="utf-8") as f:
+        feature_hypotheses = json.load(f)
+
+except Exception as e:
+    st.error(f"Ошибка при загрузке данных: {e}")
+    st.stop()
+
+# запуск прогноза
+if st.button("Запустить прогноз"):
+    with st.spinner("Модуль прогнозирования выполняется..."):
+        try:
+            clients_forecast, portraits_forecast = predictor.run_behavior_forecast(
+                mapped_df=mapped_df,
+                sim_df=sim_df,
+                portraits_rules=portraits_rules,
+                feature_hypotheses=feature_hypotheses,
+                feature_name=feature_choice,
+                train_model=train_model,
+                save_to="data"
+            )
+
+            st.session_state["forecast_clients"] = clients_forecast
+            st.session_state["forecast_portraits"] = portraits_forecast
+
+            st.success("✅ Прогноз успешно выполнен!")
+        except Exception as e:
+            st.error(f"Ошибка при выполнении прогноза: {e}")
+            st.stop()
+
+# резы и сохранение
+if "forecast_clients" in st.session_state and "forecast_portraits" in st.session_state:
+    clients_forecast = st.session_state["forecast_clients"]
+    portraits_forecast = st.session_state["forecast_portraits"]
+
+    st.markdown("### Прогноз по клиентам (первые строки)")
+    st.dataframe(clients_forecast.head())
+
+    st.markdown("### Сводный прогноз по портретам")
+    st.dataframe(portraits_forecast)
+
+    st.markdown("#### Изменение выручки по портретам")
+    st.bar_chart(
+        portraits_forecast.set_index("portrait_name")[
+            ["baseline_revenue", "predicted_revenue"]]
+    )
+
+    st.markdown("#### Изменение количества визитов")
+    st.bar_chart(
+        portraits_forecast.set_index("portrait_name")[
+            ["baseline_visits", "predicted_visits"]]
+    )
+
+    st.info("Результаты сохранены в папке `data/`")
+else:
+    st.info("Чтобы увидеть результаты, выполните прогнозирование.")
+
+# текстовое описание
+if "forecast_clients" in st.session_state and "forecast_portraits" in st.session_state:
+    summary_text = predictor.generate_forecast_summary(
+        st.session_state["forecast_clients"],
+        st.session_state["forecast_portraits"],
+        feature_name=feature_choice
+    )
+    st.markdown(summary_text)
 
 # === подвал ===
 st.markdown("""
